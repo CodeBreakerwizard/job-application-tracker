@@ -10,6 +10,16 @@ export const createPrepTopic = async (req, res) => {
             });
         }
 
+        if (
+            totalProblems < 0 ||
+            solvedProblems < 0 ||
+            solvedProblems > totalProblems
+        ) {
+            return res.status(400).json({
+                message: "Invalid problem counts",
+            });
+        }
+
         const prepTopic = await PrepTopic.create({
             topic,
             totalProblems,
@@ -59,11 +69,25 @@ export const updatePrepTopic = async (req, res) => {
 
         const { topic, totalProblems, solvedProblems } = req.body;
 
-        prepTopic.topic = topic ?? prepTopic.topic;
-        prepTopic.totalProblems =
+        const newTotalProblems =
             totalProblems ?? prepTopic.totalProblems;
-        prepTopic.solvedProblems =
+
+        const newSolvedProblems =
             solvedProblems ?? prepTopic.solvedProblems;
+
+        if (
+            newTotalProblems < 0 ||
+            newSolvedProblems < 0 ||
+            newSolvedProblems > newTotalProblems
+        ) {
+            return res.status(400).json({
+                message: "Invalid problem counts",
+            });
+        }
+
+        prepTopic.topic = topic ?? prepTopic.topic;
+        prepTopic.totalProblems = newTotalProblems;
+        prepTopic.solvedProblems = newSolvedProblems;
 
         await prepTopic.save();
 
