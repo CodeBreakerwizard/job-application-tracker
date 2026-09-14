@@ -27,11 +27,11 @@ function Register() {
         setLoading(true);
 
         try {
-            const response = await api.post("/auth/register", form);
+            await api.post("/auth/register", form);
 
-            localStorage.setItem("token", response.data.token);
+            localStorage.removeItem("token");
 
-            navigate("/dashboard");
+            navigate("/login");
         } catch (error) {
             setError(
                 error.response?.data?.message ||
